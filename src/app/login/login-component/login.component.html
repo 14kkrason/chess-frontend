@@ -1,0 +1,75 @@
+<div class="login-form-container">
+  <div class="login-title">
+    <p>
+      Chess.app
+      <mat-icon inline svgIcon="pawn"></mat-icon>
+    </p>
+  </div>
+
+  <div class="login-form-child">
+    <form
+      [formGroup]="loginForm"
+      (ngSubmit)="onSubmit()"
+    >
+      <p>
+        <mat-form-field appearance="fill" [style.width.px]="250">
+          <mat-label>Login</mat-label>
+          <mat-icon matPrefix>account_circle</mat-icon>
+          <input
+            matInput
+            placeholder="Enter your login..."
+            formControlName="login"
+            autocomplete="off"
+          />
+          <mat-error
+            *ngIf="login?.invalid && (login?.errors?.['required'] || login?.errors?.['maxlength'])"
+            >{{ getLoginErrorMessage() }}</mat-error
+          >
+        </mat-form-field>
+      </p>
+
+      <p>
+        <mat-form-field appearance="fill" [style.width.px]="250">
+          <mat-label>Password</mat-label>
+          <mat-icon matPrefix>lock</mat-icon>
+          <input
+            matInput
+            formControlName="password"
+            [type]="isHidden ? 'password' : 'text'"
+          />
+          <button
+            mat-icon-button
+            color="primary"
+            matSuffix
+            (click)="isHidden = !isHidden"
+            [attr.aria-label]="'Hide password'"
+            [attr.aria-pressed]="isHidden"
+            type="button"
+          >
+            <mat-icon>{{
+              isHidden ? "visibility_off" : "visibility"
+            }}</mat-icon>
+          </button>
+          <mat-error
+            *ngIf="password?.invalid && (password?.errors?.['required'] || password?.errors?.['maxlength']) "
+            >{{ getPasswordErrorMessage() }}</mat-error
+          >
+        </mat-form-field>
+      </p>
+      <p>
+        <button mat-raised-button color="primary" [style.width.px]="250">
+          Login
+        </button>
+      </p>
+    </form>
+    <div class="reset-password">
+      <a mat-button href="https://www.google.com/" target="_blank"
+        >Forgotten your password?</a
+      >
+    </div>
+    <mat-divider></mat-divider>
+    <div class="create-account">
+      <a mat-raised-button color="accent" href="/register">Create an account</a>
+    </div>
+  </div>
+</div>

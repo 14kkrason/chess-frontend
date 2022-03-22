@@ -1,0 +1,36 @@
+.login-title > p {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-size: xx-large;
+  font-weight: 500;
+  margin-bottom: 16px;
+  color: #7b1fa2;
+}
+
+.login-title > p > mat-icon {
+  width: 32px !important;
+  height: 32px !important;
+}
+
+.login-form-container {
+  height: 80%;
+  margin: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.reset-password, .create-account {
+  margin: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.create-account {
+  margin-top: 10px;
+}

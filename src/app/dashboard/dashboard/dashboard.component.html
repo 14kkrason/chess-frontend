@@ -1,0 +1,18 @@
+<mat-toolbar class="dashboard-toolbar" color="primary">
+  <mat-toolbar-row class="dashboard-toolbar">
+    <button mat-icon-button (click)="onLogoClick()">
+      <mat-icon class="pawn-icon" svgIcon="pawn"></mat-icon>
+    </button>
+    <span>Chess.app</span>
+    <span class="dashboard-spacer"></span>
+    <button mat-raised-button [style.width.px]="250" color="accent" (click)="onFindGame()">
+      <span>Find game</span>
+    </button>
+    <button mat-button (click)="onProfileClick()">
+      <mat-icon>account_circle</mat-icon>
+    </button>
+    <button mat-button (click)="onLogout()">
+      <mat-icon>power_settings_new</mat-icon>
+    </button>
+  </mat-toolbar-row>
+</mat-toolbar>

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, Observable, of, retry } from 'rxjs';
+import { catchError, Observable } from 'rxjs';
 import { AuthData } from '../state/models/auth-data.model';
 
 @Injectable()

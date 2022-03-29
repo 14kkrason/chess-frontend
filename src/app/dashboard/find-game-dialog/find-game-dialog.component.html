@@ -1,1 +1,53 @@
-<p>find-game-dialog works!</p>
+<h1 class="title" mat-dialog-title *ngIf="!isSearchingGame">Choose your game mode</h1>
+<h1 class="titleSearching title" mat-dialog-title *ngIf="isSearchingGame">Searching for a game</h1>
+<mat-dialog-content *ngIf="!isSearchingGame" style="height: calc(100% - 96px);">
+  <mat-card matRipple class="gamemode-card" (click)="onFindGame('bullet')">
+    <div>
+      <mat-card-header class="card-header">
+        <mat-card-title>Bullet</mat-card-title>
+      </mat-card-header>
+      <mat-icon class="icon-card" mat-card-image>whatshot</mat-icon>
+      <mat-card-content>
+        <p>3 minutes, 1 second increment</p>
+      </mat-card-content>
+    </div>
+  </mat-card>
+
+  <mat-card matRipple class="gamemode-card" (click)="onFindGame('blitz')">
+    <div>
+      <mat-card-header class="card-header">
+        <mat-card-title>Blitz</mat-card-title>
+      </mat-card-header>
+      <mat-icon class="icon-card" mat-card-image>speed</mat-icon>
+      <mat-card-content>
+        <p>5 minutes</p>
+      </mat-card-content>
+    </div>
+  </mat-card>
+
+  <mat-card matRipple class="gamemode-card" (click)="onFindGame('rapid')">
+    <div>
+      <mat-card-header class="card-header">
+        <mat-card-title>Rapid</mat-card-title>
+      </mat-card-header>
+      <mat-icon class="icon-card" mat-card-image>timer</mat-icon>
+      <mat-card-content>
+        <p>15 minutes</p>
+      </mat-card-content>
+    </div>
+  </mat-card>
+</mat-dialog-content>
+
+<mat-dialog-content *ngIf="isSearchingGame" style="height: calc(100% - 96px);" class="spinner-content">
+  <mat-spinner diameter="300" strokeWidth="12" color="accent" class="spinner"></mat-spinner>
+  <div style="font-size: x-large; width: 100%;">{{timer}}</div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button *ngIf="isSearchingGame" mat-raised-button (click)="onCancel()">Cancel</button>
+  <span style="flex: 1 1 auto;"></span>
+  <button mat-raised-button [mat-dialog-close]="true" cdkFocusInitial>
+    Close
+  </button>
+</mat-dialog-actions>
+<!-- ICONS: whatshot - bullet mode (2 minutes, 1 second add), speed - blitz mode (5 minutes), timer - rapid mode (15 minutes) -->

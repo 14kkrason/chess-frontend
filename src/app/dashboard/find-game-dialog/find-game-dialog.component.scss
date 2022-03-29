@@ -1,0 +1,42 @@
+.title {
+  display: flex;
+  justify-content: center;
+}
+
+.titleSearching {
+  margin-bottom: 15px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: center;
+}
+
+.gamemode-card {
+  margin: 10px;
+  color: black;
+  background-color: #69f0ae;
+}
+
+.icon-card {
+  justify-content: center;
+  display: flex;
+}
+
+.spinner-content {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  flex-direction: row;
+  text-align: center;
+}
+
+.spinner {
+  margin: 0 auto;
+  padding: 10px;
+}
+
+p {
+  display: flex;
+  justify-content: center;
+}

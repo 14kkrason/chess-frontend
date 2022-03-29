@@ -5,7 +5,7 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable, of, Subscription } from 'rxjs';
+import { Observable, of, Subscription, take } from 'rxjs';
 import { AuthData } from 'src/app/state/models/auth-data.model';
 import { AuthService } from '../../shared/auth.service';
 import { logIn, refresh } from '../../state/actions/auth-data.action';
@@ -59,14 +59,17 @@ export class LoginComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.authService.refreshToken({ loginAttempt: true }).subscribe({
-      next: (auth) => {
-        this.store.dispatch(refresh(auth));
-      },
-      error: (error) => {
-        console.error(error.message);
-      },
-    });
+    this.authService
+      .refreshToken({ loginAttempt: true })
+      .pipe(take(1))
+      .subscribe({
+        next: (auth) => {
+          this.store.dispatch(refresh(auth));
+        },
+        error: (error) => {
+          console.error(error.message);
+        },
+      });
   }
 
   ngOnDestroy(): void {

@@ -9,6 +9,7 @@ import { StoreModule } from '@ngrx/store';
 import { authReducer } from './state/reducers/auth-data.reducer';
 import { HttpClientModule } from '@angular/common/http';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { CountdownModule } from 'ngx-countdown';
 
 @NgModule({
   declarations: [AppComponent],
@@ -19,7 +20,8 @@ import { DashboardModule } from './dashboard/dashboard.module';
     LoginModule,
     StoreModule.forRoot({ auth: authReducer }),
     HttpClientModule,
-    DashboardModule
+    DashboardModule,
+    CountdownModule
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -1,0 +1,15 @@
+<div class="chessboard">
+  <ngx-chess-board #board [size]="592" [lightDisabled]="lightDisabled" [darkDisabled]="darkDisabled" (moveChange)="onMadeMove($event)"></ngx-chess-board>
+  <div class="user-headers">
+    <div class="oponent">
+      {{ oponentUsername }}
+      <span style="width: 20px;"></span>
+      <countdown #oponentCountdown [config]="oponentCountdownConfig"></countdown>
+    </div>
+    <div class="player">
+      {{ playerUsername }}
+      <span style="width: 20px;"></span>
+      <countdown #playerCountdown [config]="playerCountdownConfig"></countdown>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,13 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\app",
+    "\\src\\app\\dashboard",
+    "\\src\\app\\dashboard\\chessboard",
+    "\\src\\app\\shared",
+    "\\src\\app\\shared\\interfaces"
+  ],
+  "SelectedNode": "\\src\\app\\dashboard\\chessboard\\chessboard.component.ts",
+  "PreviewInSolutionExplorer": false
+}

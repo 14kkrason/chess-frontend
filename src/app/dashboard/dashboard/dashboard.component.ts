@@ -6,19 +6,17 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import {
-  Observable,
-  timeInterval,
-  merge,
   interval,
   mergeMap,
-  Subscriber,
   Subscription,
   take,
 } from 'rxjs';
 import { AuthService } from 'src/app/shared/auth.service';
 import { SocketService } from 'src/app/sockets/socket.service';
 import { logOut, refresh } from 'src/app/state/actions/auth-data.action';
+import { endGame, refreshGame } from 'src/app/state/actions/game-data.action';
 import { AuthData } from 'src/app/state/models/auth-data.model';
+import { GameData } from 'src/app/state/models/game-data.model';
 import { FindGameDialogComponent } from '../find-game-dialog/find-game-dialog.component';
 
 @Component({
@@ -27,30 +25,59 @@ import { FindGameDialogComponent } from '../find-game-dialog/find-game-dialog.co
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit, OnDestroy {
-  authData$: Observable<AuthData>;
+  authData$: Subscription;
+  gameData$: Subscription;
   refreshInterval$!: Subscription;
+  isGoToGameButtonVisible = false;
 
   constructor(
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer,
     private router: Router,
-    private store: Store<{ auth: AuthData }>,
+    private store: Store<{ auth: AuthData, game: GameData }>,
     private authService: AuthService,
     private socketService: SocketService,
-    private http: HttpClient,
     private dialog: MatDialog
   ) {
     this.matIconRegistry.addSvgIcon(
       `pawn`,
       this.domSanitizer.bypassSecurityTrustResourceUrl(`../../assets/pawn.svg`)
     );
-    this.authData$ = this.store.select('auth');
+    this.authData$ = this.store.select('auth').subscribe({
+      next: (auth: AuthData) => {
+        if(!auth.isLoggedIn) {
+          this.router.navigate(['/']);
+        }
+        console.debug(auth);
+      },
+      error: (error) => {
+        console.error(error.message);
+      }
+    });
+
+    this.gameData$ = this.store.select('game').subscribe({
+      next: (game: GameData) => {
+        // TODO: here we make GAME ACTIVE button (in)visible
+        // if the game.isGameGoint -> visible
+        // otherwise invisible
+        if(game.isGameGoing) {
+          this.isGoToGameButtonVisible = true;
+        }
+        else {
+          this.isGoToGameButtonVisible = false;
+        }
+      },
+      error: (error) => {
+        console.error(error.message);
+      }
+    })
   }
 
-  // TODO: setup socket.io service/module - shared or separate? share I think
-  // TODO: create findGameDialog
+  // TODO: refactor subscription teardown into a Destroy class similar to:
+  // https://dev.to/this-is-angular/dry-way-to-manage-subscriptions-in-angular-components-256j
+
   ngOnInit(): void {
-    this.refreshInterval$ = interval(5 * 60 * 1000)
+    this.refreshInterval$ = interval(10 * 60 * 1000)
       .pipe(mergeMap(() => this.authService.refreshToken()))
       .subscribe({
         next: (data: AuthData) => {
@@ -63,7 +90,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         error: (error) => {
           console.error(error.message);
           this.store.dispatch(logOut());
-          this.router.navigate(['/']);
         },
       });
 
@@ -78,6 +104,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
           console.error(error.message);
         },
       });
+
+    this.store.dispatch(refreshGame());
   }
 
   ngOnDestroy() {
@@ -91,13 +119,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   onProfileClick() {
     // TODO: create profiles
-    this.http
-      .get('http://localhost:3000/api/auth/data', {
-        withCredentials: true,
-      })
-      .subscribe((value) => {
-        console.log(value);
-      });
+
   }
 
   onFindGame() {
@@ -119,5 +141,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
         console.error(error.message);
       },
     });
+  }
+
+  onGoToGame() {
+    this.router.navigate(['/dashboard/game']);
+  }
+
+  // HACK: for debugging ONLY
+  clearGameData() {
+    this.store.dispatch(endGame());
   }
 }

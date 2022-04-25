@@ -5,6 +5,10 @@
     </button>
     <span>Chess.app</span>
     <span class="dashboard-spacer"></span>
+    <button *ngIf="isGoToGameButtonVisible" mat-raised-button [style.width.px]="250" color="warn" (click)="onGoToGame()">
+      <span>Go to ongoing game</span>
+    </button>
+    <span style="width: 10px;"></span>
     <button mat-raised-button [style.width.px]="250" color="accent" (click)="onFindGame()">
       <span>Find game</span>
     </button>
@@ -14,5 +18,10 @@
     <button mat-button (click)="onLogout()">
       <mat-icon>power_settings_new</mat-icon>
     </button>
+    <button mat-button (click)="clearGameData()">
+      Clear game data
+    </button>
   </mat-toolbar-row>
 </mat-toolbar>
+
+<router-outlet></router-outlet>

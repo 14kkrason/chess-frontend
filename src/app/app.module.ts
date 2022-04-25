@@ -10,6 +10,7 @@ import { authReducer } from './state/reducers/auth-data.reducer';
 import { HttpClientModule } from '@angular/common/http';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { CountdownModule } from 'ngx-countdown';
+import { gameReducer } from './state/reducers/game-data.reducer';
 
 @NgModule({
   declarations: [AppComponent],
@@ -18,7 +19,7 @@ import { CountdownModule } from 'ngx-countdown';
     AppRoutingModule,
     BrowserAnimationsModule,
     LoginModule,
-    StoreModule.forRoot({ auth: authReducer }),
+    StoreModule.forRoot({ auth: authReducer, game: gameReducer }),
     HttpClientModule,
     DashboardModule,
     CountdownModule

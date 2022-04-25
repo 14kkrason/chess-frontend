@@ -20,7 +20,7 @@ export class SocketService {
     return this.socket.fromEvent<any>(event);
   }
 
-  public emit(event: string) {
-    this.socket.emit(event, 'THIS IS A MESSAGE');
+  public emit(event: string, payload: any) {
+    this.socket.emit(event, payload);
   }
 }

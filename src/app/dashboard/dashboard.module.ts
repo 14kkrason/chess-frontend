@@ -14,9 +14,15 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatCardModule } from '@angular/material/card';
 import { MatRippleModule } from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ChessboardComponent } from './chessboard/chessboard.component';
+import { TilesMenuComponent } from './tiles-menu/tiles-menu.component';
+import { RouterModule } from '@angular/router';
+import { NgxChessBoardModule } from "ngx-chess-board";
+import { CountdownModule } from 'ngx-countdown';
+import { GameInformationDialogComponent } from './chessboard/game-information-dialog/game-information-dialog.component';
 
 @NgModule({
-  declarations: [DashboardComponent, FindGameDialogComponent],
+  declarations: [DashboardComponent, FindGameDialogComponent, ChessboardComponent, TilesMenuComponent, GameInformationDialogComponent],
   imports: [
     CommonModule,
     HttpClientModule,
@@ -29,6 +35,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatCardModule,
     MatRippleModule,
     MatProgressSpinnerModule,
+    RouterModule,
+    NgxChessBoardModule.forRoot(),
+    CountdownModule
   ],
 })
 export class DashboardModule {}

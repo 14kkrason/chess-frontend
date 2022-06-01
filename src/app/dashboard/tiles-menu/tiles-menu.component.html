@@ -1,1 +1,37 @@
-<p>tiles-menu works!</p>
+<div class="tiles-menu-container">
+  <mat-card matRipple class="gamemode-card" (click)="onLeaderboard()">
+    <div>
+      <mat-card-header class="card-header">
+        <mat-card-title>Leaderboard</mat-card-title>
+      </mat-card-header>
+      <mat-icon class="icon-card" mat-card-image>leaderboard</mat-icon>
+      <mat-card-content style="text-align: center; margin-top: 100px; font-size: large;">
+        See top players and search for any user profile
+      </mat-card-content>
+    </div>
+  </mat-card>
+
+  <mat-card matRipple class="gamemode-card" (click)="onMyStats()">
+    <div>
+      <mat-card-header class="card-header">
+        <mat-card-title>My statistics</mat-card-title>
+      </mat-card-header>
+      <mat-icon class="icon-card" mat-card-image>query_stats</mat-icon>
+      <mat-card-content style="text-align: center; margin-top: 100px; font-size: large;">
+        View your stats and game history
+      </mat-card-content>
+    </div>
+  </mat-card>
+
+  <mat-card matRipple class="gamemode-card" (click)="onAnalysis()">
+    <div>
+      <mat-card-header class="card-header">
+        <mat-card-title>Analysis</mat-card-title>
+      </mat-card-header>
+      <mat-icon class="icon-card" mat-card-image>analytics</mat-icon>
+      <mat-card-content style="text-align: center; margin-top: 100px; font-size: large;">
+        Go straight to the analysis board
+      </mat-card-content>
+    </div>
+  </mat-card>
+</div>

@@ -1,0 +1,42 @@
+.settings-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.settings-title {
+  font-size: xx-large;
+  margin: 20px;
+}
+
+.settings-expanders-container {
+  max-width: 60%;
+  width: 50%;
+}
+
+.settings-accordion {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.settings-center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.settings-username-form {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.settings-email-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.settings-panel-title {
+  min-width: 30%;
+}

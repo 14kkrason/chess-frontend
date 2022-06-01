@@ -1,0 +1,88 @@
+<div class="leaderboard-container">
+  <p class="leaderboard-top-element">Leaderboards</p>
+  <div class="leaderboard-searchbar">
+    <form
+      [formGroup]="searchForm"
+      (ngSubmit)="onSubmit()"
+    >
+      <mat-form-field class="leaderboard-form" appearance="fill">
+        <mat-label>
+          Search for player profiles
+        </mat-label>
+        <input formControlName="search" matInput/>
+      </mat-form-field>
+
+    </form>
+  </div>
+  <mat-tab-group mat-align-tabs="center">
+    <mat-tab label="Bullet">
+      <div class="leaderboard-table">
+        <table mat-table [dataSource]="bullet" class="mat-elevation-z8">
+          <ng-container matColumnDef="position">
+            <th mat-header-cell *matHeaderCellDef>No.</th>
+            <td mat-cell *matCellDef="let element">{{ element.position }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="username">
+            <th mat-header-cell *matHeaderCellDef>Username</th>
+            <td mat-cell *matCellDef="let element">{{ element.username }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="elo">
+            <th mat-header-cell *matHeaderCellDef>Elo</th>
+            <td mat-cell *matCellDef="let element">{{ element.eloBullet }}</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="columns"></tr>
+          <tr mat-row *matRowDef="let row; columns: columns" (click)="onProfileClick(row)"></tr>
+        </table>
+      </div>
+    </mat-tab>
+    <mat-tab label="Blitz">
+      <div class="leaderboard-table">
+        <table mat-table [dataSource]="blitz" class="mat-elevation-z8">
+          <ng-container matColumnDef="position">
+            <th mat-header-cell *matHeaderCellDef>No.</th>
+            <td mat-cell *matCellDef="let element">{{ element.position }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="username">
+            <th mat-header-cell *matHeaderCellDef>Username</th>
+            <td mat-cell *matCellDef="let element">{{ element.username }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="elo">
+            <th mat-header-cell *matHeaderCellDef>Elo</th>
+            <td mat-cell *matCellDef="let element">{{ element.eloBlitz }}</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="columns"></tr>
+          <tr mat-row *matRowDef="let row; columns: columns"></tr>
+        </table>
+      </div>
+    </mat-tab>
+    <mat-tab label="Rapid">
+      <div class="leaderboard-table">
+        <table mat-table [dataSource]="rapid" class="mat-elevation-z8">
+          <ng-container matColumnDef="position">
+            <th mat-header-cell *matHeaderCellDef>No.</th>
+            <td mat-cell *matCellDef="let element">{{ element.position }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="username">
+            <th mat-header-cell *matHeaderCellDef>Username</th>
+            <td mat-cell *matCellDef="let element">{{ element.username }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="elo">
+            <th mat-header-cell *matHeaderCellDef>Elo</th>
+            <td mat-cell *matCellDef="let element">{{ element.eloRapid }}</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="columns"></tr>
+          <tr mat-row *matRowDef="let row; columns: columns"></tr>
+        </table>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

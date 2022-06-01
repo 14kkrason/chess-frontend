@@ -8,15 +8,17 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatDialogModule } from '@angular/material/dialog';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { SharedModule } from '../shared/shared.module';
 import { RegisterComponent } from './register/register.component';
 import { LoginErrorComponent } from './login-error/login-error.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 @NgModule({
-  declarations: [LoginComponent, RegisterComponent, LoginErrorComponent],
+  declarations: [LoginComponent, RegisterComponent, LoginErrorComponent, ResetPasswordComponent],
   imports: [
     CommonModule,
     MatFormFieldModule,
@@ -28,7 +30,8 @@ import { LoginErrorComponent } from './login-error/login-error.component';
     HttpClientModule,
     SharedModule,
     MatDialogModule,
+    MatSnackBarModule
   ],
-  exports: [LoginComponent],
+  exports: [LoginComponent, ResetPasswordComponent],
 })
 export class LoginModule {}

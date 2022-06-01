@@ -5,12 +5,7 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import {
-  interval,
-  mergeMap,
-  Subscription,
-  take,
-} from 'rxjs';
+import { interval, mergeMap, Subscription, take } from 'rxjs';
 import { AuthService } from 'src/app/shared/auth.service';
 import { SocketService } from 'src/app/sockets/socket.service';
 import { logOut, refresh } from 'src/app/state/actions/auth-data.action';
@@ -28,13 +23,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
   authData$: Subscription;
   gameData$: Subscription;
   refreshInterval$!: Subscription;
-  isGoToGameButtonVisible = false;
+  // TODO: move this button to tile-menu
+  isGameGoing = false;
 
   constructor(
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer,
     private router: Router,
-    private store: Store<{ auth: AuthData, game: GameData }>,
+    private store: Store<{ auth: AuthData; game: GameData }>,
     private authService: AuthService,
     private socketService: SocketService,
     private dialog: MatDialog
@@ -45,14 +41,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
     );
     this.authData$ = this.store.select('auth').subscribe({
       next: (auth: AuthData) => {
-        if(!auth.isLoggedIn) {
-          this.router.navigate(['/']);
-        }
         console.debug(auth);
       },
       error: (error) => {
         console.error(error.message);
-      }
+      },
     });
 
     this.gameData$ = this.store.select('game').subscribe({
@@ -60,17 +53,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
         // TODO: here we make GAME ACTIVE button (in)visible
         // if the game.isGameGoint -> visible
         // otherwise invisible
-        if(game.isGameGoing) {
-          this.isGoToGameButtonVisible = true;
-        }
-        else {
-          this.isGoToGameButtonVisible = false;
+        if (game.isGameGoing) {
+          this.isGameGoing = true;
+        } else {
+          this.isGameGoing = false;
         }
       },
       error: (error) => {
         console.error(error.message);
-      }
-    })
+      },
+    });
   }
 
   // TODO: refactor subscription teardown into a Destroy class similar to:
@@ -110,16 +102,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     console.debug('Killing refresh interval.');
-    this.refreshInterval$.unsubscribe();
+    if (this.refreshInterval$) {
+      this.refreshInterval$.unsubscribe();
+    }
   }
 
   onLogoClick() {
     this.router.navigate(['/dashboard']);
   }
 
-  onProfileClick() {
+  onSettingsClick() {
     // TODO: create profiles
-
+    this.router.navigate(['/dashboard', 'settings']);
   }
 
   onFindGame() {
@@ -145,10 +139,5 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   onGoToGame() {
     this.router.navigate(['/dashboard/game']);
-  }
-
-  // HACK: for debugging ONLY
-  clearGameData() {
-    this.store.dispatch(endGame());
   }
 }

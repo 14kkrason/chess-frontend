@@ -10,7 +10,7 @@ export class MatchmakingService {
 
   findGame(type: string): Observable<any> {
     return this.http.post<any>(
-      'http://localhost:3000/api/game-managment/match',
+      'http://localhost:3000/api/game-management/match',
       {
         type: type,
       },
@@ -28,7 +28,7 @@ export class MatchmakingService {
 
   deleteLobby() {
     const req = this.http.delete(
-      'http://localhost:3000/api/game-managment/lobby',
+      'http://localhost:3000/api/game-management/lobby',
       {
         withCredentials: true,
         responseType: 'json'

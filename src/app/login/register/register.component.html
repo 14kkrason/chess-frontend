@@ -1,1 +1,121 @@
-<p>register works!</p>
+<div class="register-container">
+  <div class="register-title">
+    <p>
+      Chess.app
+      <mat-icon inline svgIcon="pawn"></mat-icon>
+    </p>
+  </div>
+  <p class="register-subtitle">
+    Register your account by typing required data bellow
+  </p>
+  <form
+    [formGroup]="registerForm"
+    style="flex-direction: column; display: flex"
+    (ngSubmit)="onRegister()"
+  >
+    <mat-form-field appearance="outline">
+      <mat-label>Username</mat-label>
+      <input matInput formControlName="username" autocomplete="off" />
+      <mat-error *ngIf="username?.invalid && username?.errors?.['required']">
+        Username is required
+      </mat-error>
+      <mat-error *ngIf="username?.invalid &&  username?.errors?.['maxlength']">
+        Username is too long
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" autocomplete="off" />
+      <mat-error *ngIf="email?.invalid && email?.errors?.['email']">
+        Invalid email
+      </mat-error>
+      <mat-error *ngIf="email?.invalid && email?.errors?.['required']">
+        Email is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Password</mat-label>
+      <input
+        matInput
+        formControlName="password"
+        autocomplete="off"
+        [type]="isPasswordHidden ? 'password' : 'text'"
+      />
+      <mat-hint align="start"> Make a strong password! </mat-hint>
+      <mat-error *ngIf="password?.invalid && password?.errors?.['pattern']">
+        Password is not strong enough</mat-error
+      >
+      <mat-error *ngIf="password?.invalid && password?.errors?.['required']">
+        Password is required
+      </mat-error>
+      <button
+        mat-icon-button
+        color="primary"
+        matSuffix
+        (click)="isPasswordHidden = !isPasswordHidden"
+        [attr.aria-label]="'Hide password'"
+        [attr.aria-pressed]="isPasswordHidden"
+        type="button"
+      >
+        <mat-icon>{{
+          isPasswordHidden ? "visibility_off" : "visibility"
+        }}</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" style="margin-top: 10px">
+      <mat-label>Repeat password</mat-label>
+      <input
+        matInput
+        formControlName="repeatPassword"
+        autocomplete="off"
+        [type]="isRepeatPasswordHidden ? 'password' : 'text'"
+      />
+      <mat-hint align="start"> Repeat your password. </mat-hint>
+      <mat-error
+        *ngIf="repeatPassword?.invalid && repeatPassword?.errors?.['pattern']"
+      >
+        Password is not strong enough</mat-error
+      >
+      <mat-error
+        *ngIf="repeatPassword?.invalid && repeatPassword?.errors?.['required']"
+      >
+        Password is required
+      </mat-error>
+      <button
+        mat-icon-button
+        color="primary"
+        matSuffix
+        (click)="isRepeatPasswordHidden = !isRepeatPasswordHidden"
+        [attr.aria-label]="'Hide password'"
+        [attr.aria-pressed]="isRepeatPasswordHidden"
+        type="button"
+      >
+        <mat-icon>{{
+          isRepeatPasswordHidden ? "visibility_off" : "visibility"
+        }}</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <button
+      mat-raised-button
+      style="margin-top: 10px"
+      color="primary"
+      [disabled]="
+        !(
+          password?.value === repeatPassword?.value &&
+          password?.dirty &&
+          repeatPassword?.dirty
+        ) ||
+        username?.pristine ||
+        username?.invalid ||
+        email?.pristine ||
+        email?.invalid
+      "
+    >
+      Submit
+    </button>
+  </form>
+</div>

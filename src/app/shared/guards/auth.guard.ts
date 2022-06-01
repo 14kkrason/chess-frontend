@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, ResolvedReflectiveFactory } from '@angular/core';
 import {
   ActivatedRouteSnapshot,
   CanActivate,
@@ -6,33 +6,33 @@ import {
   RouterStateSnapshot,
 } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable, of } from 'rxjs';
+import { resolve } from 'dns';
+import { firstValueFrom, Observable, of } from 'rxjs';
 import { filter, take, switchMap } from 'rxjs/operators';
 import { AuthData } from 'src/app/state/models/auth-data.model';
+import { AuthService } from '../auth.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
-    private store: Store<{ auth: AuthData }>,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
 
-  checkLoginStatus(): Observable<AuthData> {
-    return this.store.select('auth').pipe(
-      take(1)
-    )
-  }
-
-  canActivate(
+  async canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ): Observable<boolean> {
-    return this.checkLoginStatus().pipe(
-      switchMap((auth: AuthData) => {
-        if(!auth.isLoggedIn) {
-          this.router.navigate(['/login']);
-        }
-        return of(auth.isLoggedIn)})
-    )
+  ): Promise<boolean> {
+    try {
+      const value = await firstValueFrom(this.authService.refreshToken());
+      if (!value.isLoggedIn) {
+        this.router.navigateByUrl('/login');
+        return false;
+      }
+      return true;
+    } catch (e) {
+      this.router.navigateByUrl('/login');
+      return false;
+    }
   }
 }

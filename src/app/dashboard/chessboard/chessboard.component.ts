@@ -1,3 +1,4 @@
+import { ContentObserver } from '@angular/cdk/observers';
 import { HttpClient } from '@angular/common/http';
 import { ThisReceiver } from '@angular/compiler';
 import {
@@ -10,14 +11,19 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { NgxChessBoardView } from 'ngx-chess-board';
 import { CountdownComponent, CountdownConfig } from 'ngx-countdown';
 import { Subscription } from 'rxjs';
 import { GameboardService } from 'src/app/shared/gameboard.service';
 import { SocketService } from 'src/app/sockets/socket.service';
+import { endGame } from 'src/app/state/actions/game-data.action';
 import { AuthData } from 'src/app/state/models/auth-data.model';
 import { GameData } from 'src/app/state/models/game-data.model';
+import { DrawOfferDialogComponent } from './draw-offer-dialog/draw-offer-dialog.component';
+import { GameInformationDialogComponent } from './game-information-dialog/game-information-dialog.component';
 
 @Component({
   selector: 'app-chessboard',
@@ -62,7 +68,9 @@ export class ChessboardComponent
     private readonly store: Store<{ auth: AuthData; game: GameData }>,
     private readonly socketService: SocketService,
     private readonly gameboardService: GameboardService,
-    private readonly http: HttpClient
+    private readonly http: HttpClient,
+    private readonly dialog: MatDialog,
+    private readonly router: Router
   ) {}
 
   // TODO: setup countdown, user data, etc
@@ -78,7 +86,10 @@ export class ChessboardComponent
   ngOnInit(): void {
     this.gameData$ = this.store.select('game').subscribe({
       next: (game: GameData) => {
-        this.gameData = game;
+        // we get data only on first init of the component
+        if(!this.isGameAlreadySetUp) {
+          this.gameData = game;
+        }
       },
       error: (error) => {
         console.error(error.message);
@@ -111,7 +122,7 @@ export class ChessboardComponent
   private startGame(): void {
     this.http
       .post<any>(
-        'http://localhost:3000/api/game-managment/ongoing-game-data',
+        'http://localhost:3000/api/game-management/ongoing-game-data',
         {
           gameId: this.gameData.gameId,
           color: this.gameData.color,
@@ -147,7 +158,7 @@ export class ChessboardComponent
       // post request - get your timer and start it
       this.http
         .post<any>(
-          'http://localhost:3000/api/game-managment/timer',
+          'http://localhost:3000/api/game-management/timer',
           {
             gameId: this.gameData.gameId,
             color: this.gameData.color,
@@ -169,7 +180,6 @@ export class ChessboardComponent
               setTimeout(() => this.playerCountdown.begin(), 10);
             } else {
               // TODO: in this case timers don't exist, begin teardown.
-
             }
           },
         });
@@ -180,8 +190,7 @@ export class ChessboardComponent
   }
 
   private setupGameListeners(): void {
-    // this method sets up listeners for websocket event, this will be the primary mote of communication.
-    // TODO: game-is-ready -> implement listenr
+    // this method sets up listeners for websocket events, this will be the primary mote of communication during games
     this.socketListeners$.push(
       this.socketService.listen('game-is-ready').subscribe({
         next: (data) => {
@@ -192,7 +201,7 @@ export class ChessboardComponent
             }
             this.setupPlayersData(data);
             this.startTimer(data.pgn, data.color);
-            setTimeout(() => this.isGameAlreadySetUp = true, 10);
+            setTimeout(() => (this.isGameAlreadySetUp = true), 10);
           }
         },
         error: (error) => {
@@ -201,25 +210,245 @@ export class ChessboardComponent
       }),
       this.socketService.listen('move-made-successfully').subscribe({
         next: (data) => {
-          console.log(
-            'Player color is: ',
-            this.gameData.color,
-            '. Recieved: ',
-            data.color
-          );
           if (data.color === this.gameData.color) {
             this.playerCountdown.pause();
-            this.playerCountdownConfig.leftTime = parseInt(data.timeLeft);
-            setTimeout(() => this.oponentCountdown.resume(), 10);
+            this.playerCountdownConfig = {
+              format: 'mm:ss',
+              leftTime: parseInt(data.timeLeft),
+              demand: true,
+            };
             this.disableBoard(this.gameData.color!);
           } else {
             this.oponentCountdown.pause();
-            this.oponentCountdownConfig.leftTime = parseInt(data.timeLeft);
+            this.oponentCountdownConfig = {
+              format: 'mm:ss',
+              leftTime: parseInt(data.timeLeft),
+              demand: true,
+            };
             this.board.move(data.move);
-            this.enableBoard(this.gameData.color!);
-            setTimeout(() => this.playerCountdown.resume(), 10);
           }
         },
+        error: (error) => {
+          console.error(error);
+        },
+      }),
+      this.socketService.listen('started-timer').subscribe({
+        next: (data) => {
+          if (data.color === this.gameData.color) {
+            // our timer was started with these values left, we start it again
+            this.playerCountdownConfig = {
+              format: 'mm:ss',
+              leftTime: parseInt(data.timeLeft),
+              demand: true,
+            };
+            this.enableBoard(this.gameData.color!);
+            setTimeout(() => this.playerCountdown.resume(), 10);
+          } else {
+            this.oponentCountdownConfig = {
+              format: 'mm:ss',
+              leftTime: parseInt(data.timeLeft),
+              demand: true,
+            };
+            setTimeout(() => this.oponentCountdown.resume(), 10);
+          }
+        },
+        error: (error) => {},
+      }),
+      this.socketService.listen('checkmate').subscribe({
+        next: (data) => {
+          this.oponentCountdown.pause();
+          this.playerCountdown.pause();
+          this.store.dispatch(endGame());
+          this.dialog
+            .open(GameInformationDialogComponent, {
+              height: '40%',
+              width: '30%',
+              data: {
+                gameData: {
+                  ...this.gameData,
+                },
+                recievedData: {
+                  ...data,
+                },
+              },
+            })
+            .afterClosed()
+            .subscribe({
+              next: (_) => {
+                this.router.navigate(['/dashboard']);
+              },
+            });
+        },
+        error: (error) => {},
+      }),
+      this.socketService.listen('agreed_draw').subscribe({
+        next: (data) => {
+          this.oponentCountdown.pause();
+          this.playerCountdown.pause();
+          this.store.dispatch(endGame());
+          this.dialog
+            .open(GameInformationDialogComponent, {
+              height: '40%',
+              width: '30%',
+              data: {
+                gameData: {
+                  ...this.gameData,
+                },
+                recievedData: {
+                  ...data,
+                },
+              },
+            })
+            .afterClosed()
+            .subscribe({
+              next: (_) => {
+                this.router.navigate(['/dashboard']);
+              },
+            });
+        },
+        error: (error) => {},
+      }),
+      this.socketService.listen('stalemate').subscribe({
+        next: (data) => {
+          this.oponentCountdown.pause();
+          this.playerCountdown.pause();
+          this.store.dispatch(endGame());
+          this.dialog
+            .open(GameInformationDialogComponent, {
+              height: '40%',
+              width: '30%',
+              data: {
+                gameData: {
+                  ...this.gameData,
+                },
+                recievedData: {
+                  ...data,
+                },
+              },
+            })
+            .afterClosed()
+            .subscribe({
+              next: (_) => {
+                this.router.navigate(['/dashboard']);
+              },
+            });
+        },
+        error: (error) => {},
+      }),
+      this.socketService.listen('threefold_repetition').subscribe({
+        next: (data) => {
+          this.oponentCountdown.pause();
+          this.playerCountdown.pause();
+          this.store.dispatch(endGame());
+          this.dialog
+            .open(GameInformationDialogComponent, {
+              height: '40%',
+              width: '30%',
+              data: {
+                gameData: {
+                  ...this.gameData,
+                },
+                recievedData: {
+                  ...data,
+                },
+              },
+            })
+            .afterClosed()
+            .subscribe({
+              next: (_) => {
+                this.router.navigate(['/dashboard']);
+              },
+            });
+        },
+        error: (error) => {},
+      }),
+      this.socketService.listen('draw-offered').subscribe({
+        next: (data) => {
+          // TODO: implement draw-offer logic
+          this.dialog
+            .open(DrawOfferDialogComponent, {
+              height: '40%',
+              width: '30%',
+              disableClose: true,
+              data: {
+                gameData: {
+                  ...this.gameData,
+                },
+              },
+            })
+            .afterClosed()
+            .subscribe({
+              next: (data) => {
+                switch (data) {
+                  case 'accepted':
+                    this.socketService.emit('accept-draw', {
+                      ...this.gameData,
+                    });
+                    break;
+                  case 'declined':
+                    this.socketService.emit('decline-draw', {
+                      ...this.gameData,
+                    });
+                    break;
+                }
+              },
+            });
+        },
+        error: (error) => {},
+      }),
+      this.socketService.listen('player-resigned').subscribe({
+        next: (data) => {
+          this.oponentCountdown.pause();
+          this.playerCountdown.pause();
+          this.store.dispatch(endGame());
+          this.dialog
+            .open(GameInformationDialogComponent, {
+              height: '40%',
+              width: '30%',
+              data: {
+                gameData: {
+                  ...this.gameData,
+                },
+                recievedData: {
+                  ...data,
+                },
+              },
+            })
+            .afterClosed()
+            .subscribe({
+              next: (_) => {
+                this.router.navigate(['/dashboard']);
+              },
+            });
+        },
+        error: (error) => {},
+      }),
+      this.socketService.listen('timeout').subscribe({
+        next: (data) => {
+          this.oponentCountdown.pause();
+          this.playerCountdown.pause();
+          this.store.dispatch(endGame());
+          this.dialog
+            .open(GameInformationDialogComponent, {
+              height: '40%',
+              width: '30%',
+              data: {
+                gameData: {
+                  ...this.gameData,
+                },
+                recievedData: {
+                  ...data,
+                },
+              },
+            })
+            .afterClosed()
+            .subscribe({
+              next: (_) => {
+                this.router.navigate(['/dashboard']);
+              },
+            });
+        },
+        error: (error) => {},
       })
     );
   }
@@ -297,5 +526,25 @@ export class ChessboardComponent
     piece: 'Pawn';
     stalemate: false;
     x: false; */
+
+    /*  {
+      "color": "black",
+      "status": "win",
+      "reason": "checkmate",
+      "result": {
+          "nWhiteRating": 780,
+          "nBlackRating": 820,
+          "gainWhite": -20,
+          "gainBlack": 20
+      }
+  } */
+  }
+
+  onResign(): void {
+    this.socketService.emit('resign', { ...this.gameData });
+  }
+
+  onOfferDraw(): void {
+    this.socketService.emit('offer-draw', { ...this.gameData });
   }
 }

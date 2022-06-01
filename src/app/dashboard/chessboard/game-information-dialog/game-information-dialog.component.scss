@@ -1,0 +1,32 @@
+mat-card {
+  height: 60%;
+  width: 92%;
+  display: flex;
+  justify-content: center;
+}
+
+.header {
+  font-size: xx-large;
+  display: flex;
+  justify-content: center;
+}
+
+.status {
+  font-weight: bold;
+  font-size: x-large;
+  display: flex;
+  justify-content: center;
+}
+
+.message, .score {
+  font-size: x-large;
+  display: flex;
+  justify-content: center;
+}
+
+.close {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+

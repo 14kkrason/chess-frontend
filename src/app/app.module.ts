@@ -22,7 +22,7 @@ import { gameReducer } from './state/reducers/game-data.reducer';
     StoreModule.forRoot({ auth: authReducer, game: gameReducer }),
     HttpClientModule,
     DashboardModule,
-    CountdownModule
+    CountdownModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

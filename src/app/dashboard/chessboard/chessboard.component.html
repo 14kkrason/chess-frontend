@@ -10,6 +10,10 @@
       {{ playerUsername }}
       <span style="width: 20px;"></span>
       <countdown #playerCountdown [config]="playerCountdownConfig"></countdown>
+      <span style="width: 20px;"></span>
+      <button mat-raised-button (click)="onOfferDraw()"> Offer draw </button>
+      <span style="width: 20px;"></span>
+      <button mat-raised-button color="warn" (click)="onResign()"> Resign </button>
     </div>
   </div>
 </div>

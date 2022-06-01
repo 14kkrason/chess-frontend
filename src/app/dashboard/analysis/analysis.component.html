@@ -1,0 +1,59 @@
+<div class="analysis-container">
+  <div class="analysis-element">
+    <ngx-chess-board
+      #board
+      [size]="500"
+      [lightDisabled]="!freemode"
+      [darkDisabled]="!freemode"
+      (moveChange)="onMove($event)"
+    ></ngx-chess-board>
+    <div style="display: flex; justify-content: center; margin-top: 10px">
+      <button mat-fab color="primary" (click)="onClickBwd()">
+        <mat-icon>arrow_backward</mat-icon>
+      </button>
+      <span style="width: 40%"></span>
+      <button mat-fab color="primary" (click)="onClickFwd()" [disabled]="freemode">
+        <mat-icon>arrow_forward</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="analysis-element analysis-content">
+    <div class="analysis-stockfish-eval analysis-pgn">
+      {{ evaluation }}
+    </div>
+    <mat-progress-bar
+      class="analysis-pgn"
+      [color]="color"
+      [value]="evalValue"
+      style="margin-bottom: 20px"
+    ></mat-progress-bar>
+    <mat-form-field class="analysis-pgn" appearance="fill">
+      <mat-label>FEN</mat-label>
+      <textarea
+        matInput
+        cdkTextareaAutosize
+        cdkAutosizeMaxRows="1"
+        placeholder="FEN"
+        [value]="fen"
+      ></textarea>
+    </mat-form-field>
+    <br />
+    <mat-form-field class="analysis-pgn" appearance="fill">
+      <mat-label>PGN</mat-label>
+      <textarea
+        matInput
+        cdkTextareaAutosize
+        cdkAutosizeMaxRows="14"
+        placeholder="Input your PGN here..."
+        [value]="value"
+        [readonly]="freemode"
+        (change)="onChangePgn($any($event.target).value)"
+      ></textarea>
+    </mat-form-field>
+    <p style="color: red; font-size: large" *ngIf="!isPgnValid">
+      NOT A VALID PGN
+    </p>
+    <mat-slide-toggle [(ngModel)]="freemode" (click)="onToggleFreemode()">Freemode</mat-slide-toggle>
+  </div>
+</div>

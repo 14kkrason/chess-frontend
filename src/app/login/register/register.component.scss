@@ -1,0 +1,37 @@
+.register-container {
+  height: 40%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.register-title {
+  width: 40%;
+  margin-left: 12px;
+  margin-top: 40px;
+}
+
+.register-subtitle {
+  width: 40%;
+  text-align: center;
+  font-size: large;
+}
+
+.register-title > p > mat-icon {
+  width: 32px !important;
+  height: 32px !important;
+}
+
+.register-title > p {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-size: xx-large;
+  font-weight: 500;
+  margin-bottom: 16px;
+  color: #7b1fa2;
+  text-align: center;
+}
+
+.errors-snackbar {
+  white-space: pre-wrap;
+}

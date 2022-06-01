@@ -29,7 +29,7 @@ export class FindGameDialogComponent implements OnInit, OnDestroy {
     private matchmaking: MatchmakingService,
     private store: Store<{ auth: AuthData; game: GameData }>,
     private router: Router,
-    private dialog: MatDialogRef<FindGameDialogComponent>,
+    private dialog: MatDialogRef<FindGameDialogComponent>
   ) {
     this.isSearchingGame = false;
     this.isLobbyCreated = false;
@@ -47,7 +47,6 @@ export class FindGameDialogComponent implements OnInit, OnDestroy {
             color: data.color,
           })
         );
-        // TODO: router navigate to chess component /dashboard/chess/:gameId
         this.router.navigate(['/dashboard/game']);
         this.dialog.close();
       },
@@ -72,7 +71,10 @@ export class FindGameDialogComponent implements OnInit, OnDestroy {
         } else {
           console.log(data);
           // TODO: set gameId and color in local storage here
-          this.setGameDataInLocalStorage(data.game.newPlayer.gameId, data.game.newPlayer.color);
+          this.setGameDataInLocalStorage(
+            data.game.newPlayer.gameId,
+            data.game.newPlayer.color
+          );
           this.store.dispatch(
             startGame({
               isGameGoing: true,

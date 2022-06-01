@@ -1,0 +1,106 @@
+<div class="settings-container">
+  <p class="settings-title settings-center">Settings</p>
+  <div class="settings-expanders-container settings-center">
+    <mat-accordion class="settings-accordion" multi>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title class="settings-panel-title">
+            Username</mat-panel-title
+          >
+          <mat-panel-description class="settings-accordion">
+            Change your username
+            <mat-icon>account_circle</mat-icon>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <form
+          [formGroup]="usernameForm"
+          (ngSubmit)="onChangeUsername()"
+          class="settings-username-form"
+        >
+          <mat-form-field style="flex-direction: row" appearance="outline">
+            <mat-label>Username</mat-label>
+            <input
+              matInput
+              placeholder="{{ placeholderUsername }}"
+              formControlName="username"
+              autocomplete="off"
+            />
+            <button matSuffix mat-icon-button>
+              <mat-icon> start </mat-icon>
+            </button>
+            <mat-error
+              *ngIf="username?.invalid && (username?.errors?.['required'] || username?.errors?.['maxlength'])"
+            >
+              Invalid username
+            </mat-error>
+          </mat-form-field>
+        </form>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel (opened)="onOpenedEmail()">
+        <mat-expansion-panel-header>
+          <mat-panel-title class="settings-panel-title">
+            Email
+          </mat-panel-title>
+          <mat-panel-description class="settings-accordion">
+            Change your email
+            <address></address>
+            <mat-icon>mail</mat-icon>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <form
+          [formGroup]="emailForm"
+          (ngSubmit)="onChangeEmail()"
+          class="settings-email-form"
+        >
+          <p>{{ placeholderEmail }}</p>
+          <mat-form-field appearance="outline">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" autocomplete="off" />
+            <mat-error
+              *ngIf="email?.invalid && ( email?.errors?.['required'] || email?.errors?.['email'])"
+            >
+              Invalid email
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Confirm email</mat-label>
+            <input matInput formControlName="repeatEmail" autocomplete="off" />
+            <mat-error
+              *ngIf="repeatEmail?.invalid && ( repeatEmail?.errors?.['required'] || repeatEmail?.errors?.['email'])"
+            >
+              Invalid email
+            </mat-error>
+          </mat-form-field>
+
+          <button
+            mat-raised-button
+            color="primary"
+            [disabled]="!(email?.value === repeatEmail?.value)"
+          >
+            Change email
+          </button>
+        </form>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title class="settings-panel-title">
+            Password
+          </mat-panel-title>
+          <mat-panel-description class="settings-accordion">
+            Change your password
+            <mat-icon>lock</mat-icon>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <div class="settings-email-form">
+          <button mat-raised-button color="accent" (click)="onChangePassword()">
+            Change password
+          </button>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+</div>

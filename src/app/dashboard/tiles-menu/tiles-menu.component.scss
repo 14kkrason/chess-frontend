@@ -1,0 +1,28 @@
+.tiles-menu-container {
+  display: flex;
+  height: 90%;
+  justify-content: center;
+}
+
+.gamemode-card {
+  margin: 5%;
+  color: black;
+  background-color: #69f0ae;
+  max-width: 15%;
+  height: 70%;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.icon-card {
+  margin-left: 148%;
+  margin-top: 60%;
+  transform: scale(3);
+}
+
+.card-header{
+  display: flex;
+  justify-content: center;
+  margin-top: 20%;
+}

@@ -1,1 +1,21 @@
-<p>game-information-dialog works!</p>
+<div class="close">
+  <button mat-icon-button mat-dialog-close>
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+<mat-card [style.background]="color">
+  <div class="containter">
+    <mat-card-header></mat-card-header>
+    <mat-card-content>
+      <p class="status">
+        {{ status }}
+      </p>
+      <br>
+      <p class="message">
+        {{ message }}
+      </p>
+      <br>
+      <p class="score">New score: {{ newScore }} ({{ scoreGain }})</p>
+    </mat-card-content>
+  </div>
+</mat-card>

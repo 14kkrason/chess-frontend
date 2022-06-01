@@ -1,0 +1,26 @@
+.leaderboard-table > table {
+  width: 50%;
+  margin-top: 10px;
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.leaderboard-searchbar {
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+}
+
+.leaderboard-table {
+  height: 60vh;
+  overflow: auto;
+}
+
+.leaderboard-top-element {
+  text-align: center;
+  font-size: x-large;
+  margin-top: 2%;
+}
+
+

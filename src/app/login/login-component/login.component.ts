@@ -22,7 +22,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     login: new FormControl('', [Validators.required, Validators.maxLength(20)]),
     password: new FormControl('', [
       Validators.required,
-      Validators.maxLength(24),
+      Validators.maxLength(40),
     ]),
   });
   isHidden = true;

@@ -87,7 +87,7 @@ export class ChessboardComponent
     this.gameData$ = this.store.select('game').subscribe({
       next: (game: GameData) => {
         // we get data only on first init of the component
-        if(!this.isGameAlreadySetUp) {
+        if (!this.isGameAlreadySetUp) {
           this.gameData = game;
         }
       },
@@ -134,7 +134,6 @@ export class ChessboardComponent
       )
       .subscribe({
         next: (data) => {
-          // on no match we display that the user is stupidW
           switch (data.status) {
             case 'game-is-ready':
               // we do nothing, this probably aready happened
@@ -144,6 +143,27 @@ export class ChessboardComponent
               break;
             case 'game-ended':
               // TODO: begin teardown and disaplyInformation that there is no game and the user should go home
+              this.store.dispatch(endGame());
+              this.dialog
+                .open(GameInformationDialogComponent, {
+                  height: '40%',
+                  width: '30%',
+                  data: {
+                    gameData: {
+                      ...this.gameData,
+                    },
+                    recievedData: {
+                      status: 'game-ended',
+                      reason: 'The game has ended.',
+                    },
+                  },
+                })
+                .afterClosed()
+                .subscribe({
+                  next: (_) => {
+                    this.router.navigate(['/dashboard']);
+                  },
+                });
               break;
             default:
               // this should never happen
@@ -194,6 +214,10 @@ export class ChessboardComponent
     this.socketListeners$.push(
       this.socketService.listen('game-is-ready').subscribe({
         next: (data) => {
+          // HACK: setting PGN messes with the moves already made
+          // so isGameAlreadySetUp prevents it making and sending
+          // move that have already been made
+          // (there is prob a better, less hacky way to solve this)
           if (!this.isGameAlreadySetUp) {
             this.board.setPGN(data.pgn);
             if (this.gameData.color === 'black') {
@@ -499,7 +523,6 @@ export class ChessboardComponent
     }
   }
 
-  private teardown(): void {}
 
   public onMadeMove(event: any): void {
     // we send move if and only if the game is set up,

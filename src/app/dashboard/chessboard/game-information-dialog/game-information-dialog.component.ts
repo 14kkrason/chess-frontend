@@ -62,6 +62,11 @@ export class GameInformationDialogComponent implements OnInit {
         // this will probably include some listeners and back and forth action
         this.header = 'No information';
         break;
+      case 'game-ended':
+        this.header = 'Game ended';
+        this.color = '#424242';
+        this.message = readable_reason;
+        break;
     }
 
     if (this.data.gameData.color === 'white') {
